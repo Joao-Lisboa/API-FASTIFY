@@ -1,4 +1,4 @@
-import { CreateUserDTO, User } from '../dtos/user'
+import { CreateUserDTO, UpdateUserDTO, User } from '../dtos/user'
 import { UsersRepository } from '../repositories/users-repository'
 
 export class UserAlreadyExistsError extends Error {
@@ -24,5 +24,23 @@ export class UsersService {
 
   async getUserById(id: string): Promise<User | null> {
     return this.usersRepository.findById(id)
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return this.usersRepository.findAll()
+  }
+
+  async updateUser(id: string, data: UpdateUserDTO): Promise<User> {
+    const user = await this.usersRepository.update(id, data)
+
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    return user
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    await this.usersRepository.delete(id)
   }
 } 

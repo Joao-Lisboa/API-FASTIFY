@@ -9,5 +9,8 @@ export async function usersRoutes(app: FastifyInstance) {
   const usersController = new UsersController(usersService)
 
   app.post('/users', (req, reply) => usersController.create(req, reply))
-  app.get('/users/:id', (req, reply) => usersController.show(req, reply))
+  app.get('/users/:id', (req, reply) => usersController.listUserById(req, reply))
+  app.get('/users', (req, reply) => usersController.listAll(reply))
+  app.put('/users/:id', (req, reply) => usersController.updateUser(req, reply))
+  app.delete('/users/:id', (req, reply) => usersController.deleteUser(req, reply))
 } 
