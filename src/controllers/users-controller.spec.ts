@@ -19,7 +19,8 @@ describe('Users Controller', () => {
         .post('/users')
         .send({
           name: 'John Doe',
-          email: 'john@example.com'
+          email: 'john@example.com',
+          password: '123456'
         })
 
       expect(response.status).toBe(201)
@@ -27,7 +28,10 @@ describe('Users Controller', () => {
         expect.objectContaining({
           id: expect.any(String),
           name: 'John Doe',
-          email: 'john@example.com'
+          email: 'john@example.com',
+          password: expect.any(String),
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String)
         })
       )
     })
@@ -37,7 +41,8 @@ describe('Users Controller', () => {
         .post('/users')
         .send({
           name: 'Jo', // nome muito curto
-          email: 'invalid-email'
+          email: 'invalid-email',
+          password: '123456'
         })
 
       expect(response.status).toBe(400)
@@ -49,14 +54,16 @@ describe('Users Controller', () => {
         .post('/users')
         .send({
           name: 'Existing User',
-          email: 'existing@example.com'
+          email: 'existing@example.com',
+          password: '123456'
         })
 
       const response = await request(app.server)
         .post('/users')
         .send({
           name: 'Another User',
-          email: 'existing@example.com'
+          email: 'existing@example.com',
+          password: '123456'
         })
 
       expect(response.status).toBe(409)
@@ -70,7 +77,8 @@ describe('Users Controller', () => {
         .post('/users')
         .send({
           name: 'Get User',
-          email: 'get@example.com'
+          email: 'get@example.com',
+          password: '123456'
         })
 
       const userId = createResponse.body.id

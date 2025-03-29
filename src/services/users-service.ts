@@ -38,10 +38,6 @@ export class UsersService implements IUsersService {
   async update(id: string, data: Partial<User>): Promise<User | null> {
     const user = await this.usersRepository.update(id, data)
 
-    if (!user) {
-      throw new Error('User not found')
-    }
-
     return user
   }
 

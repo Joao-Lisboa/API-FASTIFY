@@ -1,5 +1,5 @@
 import { beforeAll, afterAll } from 'vitest'
-import { app } from '../../server'
+import { app } from '../../app'
 
 beforeAll(async () => {
   await app.ready()

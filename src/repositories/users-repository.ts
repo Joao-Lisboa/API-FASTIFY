@@ -2,6 +2,7 @@ import { prisma } from '../lib/prisma'
 import { CreateUserDTO, UpdateUserDTO, User } from '../dtos/user'
 import bcryptjs from 'bcryptjs'
 import { IUsersRepository } from '../interfaces/IUsersRepository'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 export class UsersRepository implements IUsersRepository {
   async create(data: CreateUserDTO): Promise<User> {
@@ -41,17 +42,27 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async update(id: string, data: UpdateUserDTO): Promise<User | null> {
-    const user = await prisma.user.update({
-      where: { id },
-      data
-    })
-    return user
+    try {
+      const user = await prisma.user.update({
+        where: { id },
+        data
+      })
+      return user
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError && error.code === 'P2025') return null
+      throw error
+    }
   }
 
   async delete(id: string): Promise<User | null> {
-    const user = await prisma.user.delete({
-      where: { id }
-    })
-    return user
+    try {
+      const user = await prisma.user.delete({
+        where: { id }
+      })
+      return user
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError && error.code === 'P2025') return null
+      throw error
+    }
   }
 } 

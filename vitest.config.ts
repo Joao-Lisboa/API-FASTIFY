@@ -3,13 +3,11 @@ import path from 'node:path'
 
 export default defineConfig({
   test: {
-    environmentMatchGlobs: [
-      ['src/http/controllers/**', 'prisma']
-    ],
-    dir: 'src',
+    globals: true,
+    environment: 'node',
     coverage: {
-      enabled: true,
-      provider: 'v8'
+      provider: 'v8',
+      reporter: ['text', 'json', 'html']
     }
   },
   resolve: {
