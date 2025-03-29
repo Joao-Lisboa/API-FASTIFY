@@ -1,4 +1,4 @@
-import { CreateUserDTO, UpdateUserDTO, User } from '../dtos/user'
+import { User } from '../dtos/user'
 import { IUsersRepository } from '../interfaces/IUsersRepository'
 import { IUsersService } from '../interfaces/IUsersService'
 
