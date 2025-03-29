@@ -1,5 +1,6 @@
 import { CreateUserDTO, UpdateUserDTO, User } from '../dtos/user'
-import { UsersRepository } from '../repositories/users-repository'
+import { IUsersRepository } from '../interfaces/IUsersRepository'
+import { IUsersService } from '../interfaces/IUsersService'
 
 export class UserAlreadyExistsError extends Error {
   constructor() {
@@ -7,10 +8,10 @@ export class UserAlreadyExistsError extends Error {
   }
 }
 
-export class UsersService {
-  constructor(private usersRepository: UsersRepository) {}
+export class UsersService implements IUsersService {
+  constructor(private usersRepository: IUsersRepository) {}
 
-  async createUser(data: CreateUserDTO): Promise<User> {
+  async create(data: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> {
     const userWithSameEmail = await this.usersRepository.findByEmail(data.email)
 
     if (userWithSameEmail) {
@@ -22,15 +23,19 @@ export class UsersService {
     return user
   }
 
-  async getUserById(id: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<User | null> {
+    return this.usersRepository.findByEmail(email)
+  }
+
+  async findById(id: string): Promise<User | null> {
     return this.usersRepository.findById(id)
   }
 
-  async getAllUsers(): Promise<User[]> {
+  async findAll(): Promise<User[]> {
     return this.usersRepository.findAll()
   }
 
-  async updateUser(id: string, data: UpdateUserDTO): Promise<User> {
+  async update(id: string, data: Partial<User>): Promise<User | null> {
     const user = await this.usersRepository.update(id, data)
 
     if (!user) {
@@ -40,7 +45,7 @@ export class UsersService {
     return user
   }
 
-  async deleteUser(id: string): Promise<void> {
-    await this.usersRepository.delete(id)
+  async delete(id: string): Promise<User | null> {
+    return this.usersRepository.delete(id)
   }
 } 

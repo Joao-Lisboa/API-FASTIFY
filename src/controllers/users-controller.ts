@@ -2,15 +2,16 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 import { createUserSchema, updateUserSchema } from '../dtos/user'
 import { UsersService, UserAlreadyExistsError } from '../services/users-service'
 import { z } from 'zod'
+import { IUsersController } from '../interfaces/IUsersController'
 
-export class UsersController {
+export class UsersController implements IUsersController {
   constructor(private usersService: UsersService) {}
 
   async create(request: FastifyRequest, reply: FastifyReply) {
     try {
       const { name, email, password } = createUserSchema.parse(request.body)
 
-      const user = await this.usersService.createUser({ name, email, password })
+      const user = await this.usersService.create({ name, email, password })
 
       return reply.status(201).send(user)
     } catch (error) {
@@ -34,7 +35,7 @@ export class UsersController {
     try {
       const { id } = paramsSchema.parse(request.params)
 
-      const user = await this.usersService.getUserById(id)
+      const user = await this.usersService.findById(id)
 
       if (!user) {
         return reply.status(404).send({ message: 'User not found' })
@@ -51,7 +52,7 @@ export class UsersController {
   }
 
   async listAll(reply: FastifyReply) {
-    const users = await this.usersService.getAllUsers()
+    const users = await this.usersService.findAll()
 
     return reply.send(users)
   }
@@ -61,19 +62,20 @@ export class UsersController {
       id: z.string().uuid()
     })
     try {
-    const { id } = paramsSchema.parse(request.params)
+      const { id } = paramsSchema.parse(request.params)
 
-    const { name, email } = updateUserSchema.parse(request.body)
+      const { name, email } = updateUserSchema.parse(request.body)
 
-    const user = await this.usersService.updateUser(id, { name, email })
+      const user = await this.usersService.update(id, { name, email })
 
-    return reply.send(user)
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return reply.status(400).send({ errors: error.format() })
+      return reply.send(user)
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.status(400).send({ errors: error.format() })
+      }
+      
+      return reply.status(500).send({ message: 'Internal server error' })
     }
-    
-  }
   }
 
   async deleteUser(request: FastifyRequest, reply: FastifyReply) {
@@ -84,7 +86,7 @@ export class UsersController {
     try {
       const { id } = paramsSchema.parse(request.params)
 
-      await this.usersService.deleteUser(id)
+      await this.usersService.delete(id)
 
       return reply.status(204).send()
     } catch (error) {

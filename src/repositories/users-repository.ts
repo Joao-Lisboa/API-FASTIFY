@@ -1,7 +1,9 @@
 import { prisma } from '../lib/prisma'
 import { CreateUserDTO, UpdateUserDTO, User } from '../dtos/user'
 import bcryptjs from 'bcryptjs'
-export class UsersRepository {
+import { IUsersRepository } from '../interfaces/IUsersRepository'
+
+export class UsersRepository implements IUsersRepository {
   async create(data: CreateUserDTO): Promise<User> {
     const user = await prisma.user.create({
       data: {
@@ -38,7 +40,7 @@ export class UsersRepository {
     return users
   }
 
-  async update(id: string, data: UpdateUserDTO): Promise<User> {
+  async update(id: string, data: UpdateUserDTO): Promise<User | null> {
     const user = await prisma.user.update({
       where: { id },
       data
@@ -46,9 +48,10 @@ export class UsersRepository {
     return user
   }
 
-  async delete(id: string): Promise<void> {
-    await prisma.user.delete({
+  async delete(id: string): Promise<User | null> {
+    const user = await prisma.user.delete({
       where: { id }
     })
+    return user
   }
 } 
