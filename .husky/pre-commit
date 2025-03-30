@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🏗️  Iniciando verificações de pre-commit..."
+
+echo "📦 Verificando build do projeto..."
+npm run build || {
+  echo "❌ Build falhou!"
+  exit 1
+}
+echo "✅ Build completado com sucesso!"
+
+echo "🧪 Executando testes..."
+npm run test || {
+  echo "❌ Testes falharam!"
+  exit 1
+}
+echo "✅ Testes passaram com sucesso!"
+
+echo "🎉 Todas as verificações passaram! Prosseguindo com o commit..."
