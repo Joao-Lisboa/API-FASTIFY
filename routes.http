@@ -87,7 +87,7 @@ GET http://localhost:3000/categories
 
 ###
 
-GET http://localhost:3000/categories/1
+GET http://localhost:3000/categories/337bc2a8-71e2-4053-a51d-42a1283c1314
 
 ###
 
