@@ -1,9 +1,11 @@
 import fastify from 'fastify'
 import cors from '@fastify/cors'
+import jwt from '@fastify/jwt'
 import { env } from './config/env'
 import { usersRoutes } from './routes/users'
 import { productsRoutes } from './routes/products'
 import { categoryRoutes } from './routes/categorys'
+import { jwtConfig } from './config/jwt'
 
 export const app = fastify({
   logger: true
@@ -13,6 +15,9 @@ export const app = fastify({
 app.register(cors, {
   origin: true // Permite todas as origens em desenvolvimento
 })
+
+// Registra o plugin JWT
+app.register(jwt, jwtConfig)
 
 // Registra as rotas
 app.register(usersRoutes)

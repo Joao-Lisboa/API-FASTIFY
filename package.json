@@ -21,6 +21,7 @@
   "description": "API com Fastify e TypeScript",
   "dependencies": {
     "@fastify/cors": "^8.3.0",
+    "@fastify/jwt": "^6.7.1",
     "@prisma/client": "^6.5.0",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.2",

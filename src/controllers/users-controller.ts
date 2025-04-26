@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { createUserSchema, updateUserSchema } from '../dtos/user'
-import { UsersService, UserAlreadyExistsError } from '../services/users-service'
+import { createUserSchema, updateUserSchema, loginSchema } from '../dtos/user'
+import { UsersService, UserAlreadyExistsError, InvalidCredentialsError } from '../services/users-service'
 import { z } from 'zod'
 import { IUsersController } from '../interfaces/IUsersController'
 
@@ -96,5 +96,43 @@ export class UsersController implements IUsersController {
 
       return reply.status(500).send({ message: 'Internal server error' })
     }
-  }   
+  }
+
+  async login(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const { email, password } = loginSchema.parse(request.body)
+
+      const user = await this.usersService.login({ email, password })
+
+      if (!user) {
+        return reply.status(401).send({ message: 'Invalid credentials' })
+      }
+
+      const token = await reply.jwtSign(
+        { 
+          sub: user.id,
+          name: user.name,
+          email: user.email
+        },
+        {
+          expiresIn: '1d'
+        }
+      )
+
+      return reply.status(200).send({
+        user,
+        token
+      })
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.status(400).send({ errors: error.format() })
+      }
+
+      if (error instanceof InvalidCredentialsError) {
+        return reply.status(401).send({ message: error.message })
+      }
+
+      return reply.status(500).send({ message: 'Internal server error' })
+    }
+  }
 } 
