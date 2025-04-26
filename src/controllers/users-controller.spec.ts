@@ -3,6 +3,14 @@ import request from 'supertest'
 import { app } from '../server'
 import { prisma } from '../lib/prisma'
 
+async function getAuthToken(email: string, password: string) {
+  const response = await request(app.server)
+    .post('/auth/login')
+    .send({ email, password })
+
+  return response.body.token
+}
+
 describe('Users Controller', () => {
   beforeAll(async () => {
     await app.ready()
@@ -83,8 +91,11 @@ describe('Users Controller', () => {
 
       const userId = createResponse.body.id
 
+      const token = await getAuthToken('get@example.com', '123456')
+
       const response = await request(app.server)
         .get(`/users/${userId}`)
+        .set('Authorization', `Bearer ${token}`)
 
       expect(response.status).toBe(200)
       expect(response.body).toEqual(
@@ -96,11 +107,31 @@ describe('Users Controller', () => {
       )
     })
 
-    it('should return 404 for non-existing user', async () => {
+    it('should return 401 for non-authenticated request', async () => {
       const response = await request(app.server)
         .get('/users/non-existing-id')
 
-      expect(response.status).toBe(400)
+      expect(response.status).toBe(401)
+      expect(response.body.message).toBe('Não autorizado')
+    })
+
+    it('should return 404 for non-existing user', async () => {
+      await request(app.server)
+        .post('/users')
+        .send({
+          name: 'Test User',
+          email: 'test@example.com',
+          password: '123456'
+        })
+
+      const token = await getAuthToken('test@example.com', '123456')
+
+      const response = await request(app.server)
+        .get('/users/123e4567-e89b-12d3-a456-426614174000') // UUID válido mas inexistente
+        .set('Authorization', `Bearer ${token}`)
+
+      expect(response.status).toBe(404)
+      expect(response.body.message).toBe('User not found')
     })
   })
 })
