@@ -127,7 +127,7 @@ describe('Users Controller', () => {
       const token = await getAuthToken('test@example.com', '123456')
 
       const response = await request(app.server)
-        .get('/users/123e4567-e89b-12d3-a456-426614174000') // UUID válido mas inexistente
+        .get('/users/123e4567-e89b-12d3-a456-426614174000')
         .set('Authorization', `Bearer ${token}`)
 
       expect(response.status).toBe(404)
