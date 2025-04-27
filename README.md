@@ -1,6 +1,7 @@
 # API Fastify com TypeScript
 
-Este é um projeto de API RESTful desenvolvido com Fastify e TypeScript, implementando boas práticas de desenvolvimento e arquitetura limpa.
+Este é um projeto de API RESTful para um e-commerce, desenvolvido com Fastify e TypeScript, seguindo boas práticas de desenvolvimento e arquitetura limpa.
+A API permite: cadastro e autenticação de usuários, criação e gerenciamento de produtos e categorias, criação de carrinhos contendo produtos de diferentes categorias, validação de token JWT para rotas protegidas e operações completas de CRUD.
 
 ## 🚀 Tecnologias Utilizadas
 
