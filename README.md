@@ -142,5 +142,3 @@ Este projeto está sob a licença ISC.
 [João Lisboa] - [https://www.linkedin.com/in/jo%C3%A3o-v%C3%ADtor-lisboa-silva-8a5604237/]
 
 [Pedro Camilo] - [https://www.linkedin.com/in/pedro-camilo-749482216/]
-
-Project Link: [URL do Projeto]
