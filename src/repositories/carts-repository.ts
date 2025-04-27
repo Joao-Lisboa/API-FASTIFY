@@ -32,6 +32,9 @@ export class CartsRepository implements ICartsRepository {
       data: {
         cartId,
         ...data
+      },
+      include: {
+        product: true
       }
     })
     return item

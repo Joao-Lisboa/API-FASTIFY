@@ -36,7 +36,7 @@ export class CartsService {
 
   async addToCart(userId: string, data: AddToCartDTO): Promise<CartItem> {
     const product = await this.productsRepository.findById(data.productId)
-    if (!product) {
+    if (!product || product.length === 0) {
       throw new ProductNotFoundError()
     }
 

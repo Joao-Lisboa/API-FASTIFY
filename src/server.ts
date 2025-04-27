@@ -6,7 +6,7 @@ import { usersRoutes } from './routes/users'
 import { productsRoutes } from './routes/products'
 import { categoryRoutes } from './routes/categorys'
 import { jwtConfig } from './config/jwt'
-
+import { cartRoutes } from './routes/cart'
 export const app = fastify({
   logger: true
 })
@@ -23,6 +23,7 @@ app.register(jwt, jwtConfig)
 app.register(usersRoutes)
 app.register(productsRoutes)
 app.register(categoryRoutes)
+app.register(cartRoutes)
 
 // Rota de teste
 app.get('/', async () => {

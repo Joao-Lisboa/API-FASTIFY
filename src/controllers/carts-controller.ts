@@ -20,6 +20,7 @@ export class CartsController {
 
       return reply.status(201).send(item)
     } catch (error) {
+      
       if (error instanceof z.ZodError) {
         return reply.status(400).send({ errors: error.format() })
       }
@@ -30,6 +31,10 @@ export class CartsController {
 
       if (error instanceof InsufficientStockError) {
         return reply.status(400).send({ message: error.message })
+      }
+
+      if (error instanceof Error) {
+        return reply.status(500).send({ message: 'Internal server error', error: error.message })
       }
 
       return reply.status(500).send({ message: 'Internal server error' })
@@ -49,6 +54,7 @@ export class CartsController {
 
       return reply.send(item)
     } catch (error) {
+      
       if (error instanceof z.ZodError) {
         return reply.status(400).send({ errors: error.format() })
       }
@@ -77,6 +83,7 @@ export class CartsController {
 
       return reply.status(204).send()
     } catch (error) {
+      
       if (error instanceof z.ZodError) {
         return reply.status(400).send({ errors: error.format() })
       }
